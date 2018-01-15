@@ -1,6 +1,8 @@
 package oca.tryresources;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
 
@@ -18,5 +20,7 @@ public class Main {
         finally {
             System.out.println("Explicit finally");
         }
+
+        List<String> list =  new ArrayList<>(); //diamond operator
     }
 }
