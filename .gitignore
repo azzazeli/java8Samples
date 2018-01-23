@@ -1,0 +1,11 @@
+# gradle caches
+.gradle/
+buildSrc/.gradle/
+
+# idea project files
+.idea/
+tm.iml
+
+# build files
+/*/build/
+/*/*/build/
