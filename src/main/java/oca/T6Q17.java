@@ -3,7 +3,9 @@ package oca;
 public class T6Q17 {
     class HasSoreThroatException extends Exception {}
     class TiredException extends RuntimeException {}
-
+//    t6Q17(){
+//
+//    }
     interface Roar {
         void roar() throws HasSoreThroatException;
     }
