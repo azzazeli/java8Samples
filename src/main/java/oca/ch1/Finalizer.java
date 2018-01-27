@@ -16,8 +16,26 @@ public class Finalizer {
         System.out.println("Calling finalize");
     }
 
+    private void testDivide(){
+        short x = 10;
+        short y = 3;
+        System.out.println(x/y);
+
+    }
+
+    private void testCompoundAssignmentOperator(){
+        long x = 10;
+        int y = 3;
+        y *= x;
+        System.out.println(y);
+    }
+
     public static void main(String[] args){
         Finalizer finalizer = new Finalizer();
+        finalizer.testDivide();
+        finalizer.testCompoundAssignmentOperator();
+
+
         byte b1 = 22;
         byte b2 = 23;
         byte b3 = (byte)(b1 + b2);
