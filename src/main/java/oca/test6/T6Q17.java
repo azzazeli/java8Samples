@@ -1,4 +1,4 @@
-package oca;
+package oca.test6;
 
 public class T6Q17 {
     class HasSoreThroatException extends Exception {}
