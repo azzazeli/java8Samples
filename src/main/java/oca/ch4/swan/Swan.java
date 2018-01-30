@@ -1,6 +1,6 @@
-package oca.accessmodifiers.pond.swan;
+package oca.ch4.swan;
 
-import oca.accessmodifiers.pond.shore.Bird;
+import oca.ch4.shore.Bird;
 
 public class Swan extends Bird {
     public void swim(){
@@ -15,7 +15,8 @@ public class Swan extends Bird {
 
     public void helpOtherBirdSwim(){
         Bird bird = new Bird();
-//        bird.floatInWater();
-//        System.out.println(bird.text);
+        //the code just happens to be in the Swan class
+//        bird.floatInWater(); //floatInWater has protected access
+//        System.out.println(bird.text); //text has protected access
     }
 }

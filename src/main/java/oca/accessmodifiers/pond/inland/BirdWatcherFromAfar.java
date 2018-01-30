@@ -1,6 +1,6 @@
 package oca.accessmodifiers.pond.inland;
 
-import oca.accessmodifiers.pond.shore.Bird;
+import oca.ch4.shore.Bird;
 
 public class BirdWatcherFromAfar {
     public void watchBird(){

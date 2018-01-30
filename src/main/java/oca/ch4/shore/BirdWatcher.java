@@ -1,4 +1,4 @@
-package oca.accessmodifiers.pond.shore;
+package oca.ch4.shore;
 
 public class BirdWatcher {
     public void watchBird(){

@@ -1,4 +1,4 @@
-package oca.accessmodifiers.pond.goose;
+package oca.ch4.goose;
 
 public class GooseWatcher {
     public void watch(){

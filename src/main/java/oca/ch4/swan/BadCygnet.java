@@ -1,4 +1,4 @@
-package oca.accessmodifiers.pond.swan;
+package oca.ch4.swan;
 
 import oca.accessmodifiers.pond.duck.MotherDuck;
 

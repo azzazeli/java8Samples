@@ -1,6 +1,6 @@
-package oca.accessmodifiers.pond.goose;
+package oca.ch4.goose;
 
-import oca.accessmodifiers.pond.shore.Bird;
+import oca.ch4.shore.Bird;
 
 public class Goose extends Bird {
     public void helpGooseSwim(){
