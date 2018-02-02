@@ -1,4 +1,4 @@
-package oca.hiding;
+package oca.ch5.hiding;
 
 public class Marsupial {
     public static boolean isBiped() {

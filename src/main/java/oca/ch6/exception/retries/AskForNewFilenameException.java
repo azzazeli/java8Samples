@@ -1,4 +1,4 @@
-package oca.exception.retries;
+package oca.ch6.exception.retries;
 
 public class AskForNewFilenameException extends Exception {
 

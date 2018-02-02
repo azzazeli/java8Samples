@@ -1,4 +1,4 @@
-package oca.hiding.methods;
+package oca.ch5.hiding.methods;
 
 public abstract class Bird {
     private void fly() {

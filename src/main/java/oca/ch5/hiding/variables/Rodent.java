@@ -1,4 +1,4 @@
-package oca.hiding.variables;
+package oca.ch5.hiding.variables;
 
 public class Rodent {
     protected int tailLength = 4;

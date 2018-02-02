@@ -1,10 +1,11 @@
-package oca.exception;
+package oca.ch6.exception;
 
 import java.io.EOFException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.SocketException;
 
+@SuppressWarnings("Duplicates")
 public class M9L2 {
     public static void main(String[] args) {
         try {
