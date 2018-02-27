@@ -7,12 +7,45 @@ public class TestQuestions {
     String s  = this.toString();
 
     public static void main(String[] args) {
+        question68();
+        question67();
+        question66();
+        question58();
         question31();
         question30();
         question24();
         question6();
         question5();
         question2();
+    }
+
+    private static void question68() {
+        boolean b = true | false;
+        boolean b1 = true || false;
+    }
+
+    private static void question67() {
+        System.out.println("===========q67=============");
+        Integer i = new Integer(1);
+        Long m = new Long(1);
+
+        if(i.equals(m)) System.out.println("equals");
+        else System.out.println("not equals");
+
+    }
+
+    private static void question66() {
+        System.out.println("========================");
+        int x = 1;
+        int y = 0;
+//        if( x/y ) System.out.println("Good"); //Boolean expression is expected
+//        else System.out.println("Bad");
+    }
+
+    private static void question58() {
+        System.out.println("========================");
+        String [] sA = new String[] {"a"};
+//        String [] sA1 = new String[1] {"a"}; //DOES NOT COMPILE
     }
 
     private static void question31() {
