@@ -14,9 +14,27 @@ public class TestQuestions {
         question31();
         question30();
         question24();
+        question11();
         question6();
         question5();
         question2();
+    }
+
+    private static void question11() {
+        System.out.println("===========q11=============");
+        String myStr = "good";
+        char[] myCharArr = {'g', 'o', 'o', 'd'};
+        String newStr = null;
+
+        for(char c : myCharArr){
+            newStr = newStr + c;
+        }
+
+        System.out.println("myStr:" + myStr+" newStr:" + newStr);
+        System.out.println(myStr==newStr);
+        System.out.println(myStr.equals(newStr));
+//        "".intern()
+
     }
 
     private static void question68() {
