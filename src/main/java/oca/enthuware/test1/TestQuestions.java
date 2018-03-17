@@ -40,6 +40,7 @@ public class TestQuestions {
     private static void question68() {
         boolean b = true | false;
         boolean b1 = true || false;
+        boolean b2  = (10<11);
     }
 
     private static void question67() {
@@ -63,6 +64,7 @@ public class TestQuestions {
     private static void question58() {
         System.out.println("========================");
         String [] sA = new String[] {"a"};
+//        String [] sA2 = new String[];//DOES NOT COMPILE
 //        String [] sA1 = new String[1] {"a"}; //DOES NOT COMPILE
     }
 
