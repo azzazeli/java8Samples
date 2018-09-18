@@ -78,7 +78,7 @@ public class TestQuestions {
     }
 
     private static void question30() {
-        System.out.println("========================");
+        System.out.println("=============q30===========");
         int index = 1;
         try{
             getArray()[index = 2]++;
