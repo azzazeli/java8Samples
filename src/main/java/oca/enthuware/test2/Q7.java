@@ -1,12 +1,12 @@
 package oca.enthuware.test2;
 
-class A {
+class AA {
     public double m1(int a) {
         return a*10/4-30;
     }
 }
 
-class A2 extends A {
+class A2 extends AA {
     public double m1(int a) {
         return a*10/4.0;
     }

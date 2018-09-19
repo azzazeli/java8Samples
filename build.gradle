@@ -2,14 +2,17 @@ apply plugin: 'idea'
 apply plugin: 'java'
 
 repositories {
+    maven { url "https://repo.spring.io/libs-release" }
     mavenCentral()
 }
 
 dependencies {
     compile "junit:junit:4.12"
     compile "org.apache.commons:commons-lang3:3.0"
+    compile "org.springframework.data:spring-data-jpa:2.0.10.RELEASE"
+    compile "org.jooq:jool-java-8:0.9.14"
+    compile "org.mockito:mockito-core:1.+"
 }
-
 subprojects {
 
     repositories {
@@ -21,3 +24,4 @@ subprojects {
 task wrapper(type: Wrapper) {
     gradleVersion = '2.4'
 }
+
