@@ -2,21 +2,85 @@ package oca.enthuware.test2;
 
 import com.sun.org.apache.xpath.internal.operations.Bool;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
 public class Questions {
     public static void main(String[] args) {
-        question8();
-        question14();
+//        DateTimeFormatter.ISO_DATE
+        question7();
+//        question8();
+//        question14();
 //        question19();
-        question26();
-        question28();
-        question29();
-        question32();
-        question35();
-        question40();
+//        question26();
+//        question27();
+//        question28();
+//        question29();
+//        question33();
+//        question32();
+//        question35();
+//        question40();
+        question50();
+//        question64();
+//        question66();
+    }
+
+    private static void question50() {
+        int j = 10;
+        POINT1: for(int i =0; i< 10; i++) {
+            boolean flag = false;
+            while (!flag) {
+                if (Math.random() > 0.5) break POINT1;
+            }
+        }
+
+        while (j<10) {
+            System.out.println(j--);
+//            if (j==4) break POINT1; //WILL NOT COMPILE
+        }
+    }
+
+    private static void question7() {
+        int i = 2*10/6;
+        System.out.println(i);
+    }
+
+    private static void question66() {
+        int [] values = {10,20,30};
+        for (int k: values) {}
+//        for (int k; k<10; k++) {} //DOES NOT COMPILE k should be initialized
+        for(;;);
+//        for(; k<values.length; k++) {} //DOES  NOT COMPILE ; must be declared first
+    }
+
+    private static void question64() {
+//        float f1 = 1.0; //DOES NOT COMPILE
+//        float f2 = 43e1; //DOES NOT COMPILE
+        float f3 = -1;
+        float f4 = 0x1234;
+        float f = 4;
+    }
+
+    private static void question33() {
+        short s = 12;
+        long g = 012;
+        float f = - 123;
+//        float d =  0*1.5; //DOES NOT COMPILE
+    }
+
+    private static void question27() {
+        int s = 5;
+        s+= s + mx(s) + ++s;
+        System.out.println(s);
+    }
+
+    private static int mx(int s){
+        for (int i = 0; i < 3; i++) {
+            s = s + i;
+        }
+        return s;
     }
 
     private static void question40() {
