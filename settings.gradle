@@ -1,3 +1,4 @@
 rootProject.name = 'java8samples'
 
 include ':proto-sample'
+include ':dynamic-proxy'
