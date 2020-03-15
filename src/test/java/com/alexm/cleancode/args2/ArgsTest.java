@@ -2,7 +2,6 @@ package com.alexm.cleancode.args2;
 
 import org.junit.jupiter.api.Test;
 
-import static com.alexm.cleancode.args2.ArgsException.ErrorCode.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -16,41 +15,39 @@ import static org.mockito.Matchers.*;
 class ArgsTest {
 
     @Test
-    void noSchemaNoArguments() throws ArgsException {
+    void noSchemaNoArguments() {
         Args args = new Args("", new String[0]);
         assertThat(args.cardinality(), is(eq(0)));
     }
 
     @Test
     void noSchemaOneArgument() {
-        final ArgsException exception = assertThrows(ArgsException.class, () -> new Args("", new String[]{"-x"}));
-        assertThat(exception.errorCode(), is(eq(UNEXPECTED_ARGUMENT)));
-        assertThat(exception.errorArgumentId(), is(eq('x')));
+        Args args = new Args("", new String[]{"-x"});
+        assertEquals("Argument (s) - x unexpected.", args.getErrorMessage());
     }
 
     @Test
     void noSchemaMultipleArguments() {
-        final ArgsException exception = assertThrows(ArgsException.class, () -> new Args("", new String[]{"-x", "-y"}));
-        assertThat(exception.errorCode(), is(eq(UNEXPECTED_ARGUMENT)));
-        assertThat(exception.errorArgumentId(), is(eq('x')));
+        Args args = new Args("", new String[]{"-x", "-y"});
+        assertEquals("Argument (s) - x y unexpected.", args.getErrorMessage());
     }
 
     @Test
     void nonLetterSchema() {
-        final ArgsException ex = assertThrows(ArgsException.class, () -> new Args("*", new String[]{}));
-        assertThat(ex.errorCode(), is(eq(INVALID_ARGUMENT_NAME)));
+        Args args = new Args("*", new String[]{});
+        assertThat(0, is(eq(args.cardinality())));
+        assertEquals("", args.getErrorMessage());
     }
 
     @Test
     void invalidArgumentFormat() {
-        final ArgsException ex = assertThrows(ArgsException.class, () -> new Args("t%", new String[]{}));
-        assertThat(ex.errorCode(), is(eq(INVALID_ARGUMENT_FORMAT)));
-        assertThat(ex.errorArgumentId(), is(eq('f')));
+        Args args = new Args("t%", new String[]{});
+        //todo: implement me
     }
 
     @Test
-    void simpleBooleanPresent() throws ArgsException {
-        Args args = new Args("x", new String[]{"x"});
+    void simpleBooleanPresent() {
+        Args args = new Args("x", new String[]{"-x"});
         assertAll("",
                 () -> assertEquals(1, args.cardinality()),
                 () -> assertTrue(args.getBoolean('x'))
@@ -58,7 +55,7 @@ class ArgsTest {
     }
 
     @Test
-    void spaceInFormat() throws ArgsException {
+    void spaceInFormat() {
         Args args = new Args("x,h", new String[]{"-xh"});
         assertAll("",
                 () -> assertEquals(2, args.cardinality()),
