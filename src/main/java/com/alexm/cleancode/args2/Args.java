@@ -10,15 +10,19 @@ public class Args {
 
     }
 
-    public boolean getBoolean(String arg) {
+    public boolean getBoolean(char arg) {
         return false;
     }
 
-    public int getInteger(String arg) {
+    public int getInteger(char arg) {
         return 0;
     }
 
-    public String getString(String arg) {
+    public String getString(char arg) {
         return null;
+    }
+
+    public int cardinality() {
+        return 0;
     }
 }

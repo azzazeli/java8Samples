@@ -1,6 +1,13 @@
 apply plugin: 'idea'
 apply plugin: 'java'
 
+if (hasProperty('buildScan')) {
+    buildScan {
+        termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+        termsOfServiceAgree = 'yes'
+    }
+}
+
 repositories {
     maven { url "https://repo.spring.io/libs-release" }
     mavenCentral()
@@ -22,6 +29,10 @@ subprojects {
         mavenCentral()
     }
 
+}
+
+test {
+    useJUnitPlatform()
 }
 
 task wrapper(type: Wrapper) {
