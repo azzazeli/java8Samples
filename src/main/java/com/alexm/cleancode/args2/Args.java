@@ -17,7 +17,7 @@ public class Args {
     private String[] args;
     private boolean valid;
     private Set<Character> unexpectedArguments = new TreeSet<>();
-    private Map<Character, Boolean> booleanArgs = new HashMap<>();
+    private Map<Character, ArgumentMarshaler> booleanArgs = new HashMap<>();
     private Map<Character, String> stringArgs = new HashMap<>();
     private Set<Character> argsFound = new TreeSet<>();
     private int currentArgument = 0;
@@ -78,12 +78,12 @@ public class Args {
     private void parseBooleanSchemaElement(String element) {
         final char c = element.charAt(0);
         if (Character.isLetter(c)) {
-            booleanArgs.put(c, false);
+            booleanArgs.put(c, new ArgumentMarshaler.BooleanArgumentMarshaller());
         }
     }
 
-    private void validateSchemaElementId(char elementId) throws ParseException {
-        if (!Character.isLetter(elementId)) {
+        private void validateSchemaElementId(char elementId) throws ParseException {
+            if (!Character.isLetter(elementId)) {
             throw new ParseException("Bad character:" + elementId + " in Args format:" + schema, 0);
         }
     }
@@ -143,7 +143,7 @@ public class Args {
     }
 
     private void setBooleanArgument(char argChar, boolean b) {
-        this.booleanArgs.put(argChar, b);
+        this.booleanArgs.get(argChar).setBooleanValue(b);
     }
 
     private boolean isBoolean(char argChar) {
@@ -158,7 +158,7 @@ public class Args {
     }
 
     public boolean getBoolean(char arg) {
-        return booleanArgs.get(arg);
+        return booleanArgs.get(arg).getBooleanValue();
     }
 
     public String getErrorMessage() throws Exception {
@@ -196,4 +196,29 @@ public class Args {
     public boolean isValid() {
         return valid;
     }
+
+    private static class ArgumentMarshaler {
+        private boolean booleanValue;
+
+        public boolean getBooleanValue() {
+            return booleanValue;
+        }
+
+        public void setBooleanValue(boolean booleanValue) {
+            this.booleanValue = booleanValue;
+        }
+
+        private static class BooleanArgumentMarshaller extends ArgumentMarshaler {
+
+        }
+
+        private static class StringArgumentMarshaller extends ArgumentMarshaler {
+
+        }
+
+        private static class IntegerArgumentMarshaller extends ArgumentMarshaler {
+
+        }
+    }
+
 }
