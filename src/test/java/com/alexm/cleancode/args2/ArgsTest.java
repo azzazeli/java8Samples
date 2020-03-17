@@ -107,4 +107,10 @@ class ArgsTest {
         assertTrue(args.usage().isEmpty());
     }
 
+    @Test
+    void getBooleanForMissingArg() throws ParseException {
+        final Args args = new Args("", new String[]{"-xc"});
+        assertFalse(args.getBoolean('v'));
+    }
+
 }

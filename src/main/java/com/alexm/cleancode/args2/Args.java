@@ -157,8 +157,9 @@ public class Args {
         return "";
     }
 
-    public boolean getBoolean(char arg) {
-        return booleanArgs.get(arg).getBooleanValue();
+    public boolean getBoolean(char argChar) {
+        final ArgumentMarshaler am = booleanArgs.get(argChar);
+        return am != null && am.getBooleanValue();
     }
 
     public String getErrorMessage() throws Exception {
