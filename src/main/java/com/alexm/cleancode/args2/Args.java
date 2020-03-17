@@ -18,7 +18,7 @@ public class Args {
     private boolean valid;
     private Set<Character> unexpectedArguments = new TreeSet<>();
     private Map<Character, ArgumentMarshaler> booleanArgs = new HashMap<>();
-    private Map<Character, String> stringArgs = new HashMap<>();
+    private Map<Character, ArgumentMarshaler> stringArgs = new HashMap<>();
     private Set<Character> argsFound = new TreeSet<>();
     private int currentArgument = 0;
     private ErrorCode errorCode = OK;
@@ -64,7 +64,7 @@ public class Args {
     }
 
     private void parseStringSchemaElement(char elementId) {
-        stringArgs.put(elementId, "");
+        stringArgs.put(elementId, new ArgumentMarshaler.StringArgumentMarshaller());
     }
 
     private boolean isStringSchemaElement(String element) {
@@ -130,7 +130,7 @@ public class Args {
     private void setStringArgument(char argChar) {
         currentArgument++;
         try {
-            stringArgs.put(argChar, args[currentArgument]);
+            stringArgs.get(argChar).setStringValue(args[currentArgument]);
         } catch (ArrayIndexOutOfBoundsException e) {
             valid = false;
             errorArgument = argChar;
@@ -162,6 +162,11 @@ public class Args {
         return am != null && am.getBooleanValue();
     }
 
+    public String getString(char argChar) {
+        final ArgumentMarshaler am = stringArgs.get(argChar);
+        return am == null ? "" : am.getStringValue();
+    }
+
     public String getErrorMessage() throws Exception {
         if (!unexpectedArguments.isEmpty()) {
             return unexpectedArgumentMessage();
@@ -186,10 +191,6 @@ public class Args {
         return sb.toString();
     }
 
-    public String getString(char arg) {
-        return stringArgs.get(arg);
-    }
-
     public int cardinality() {
         return argsFound.size();
     }
@@ -200,6 +201,7 @@ public class Args {
 
     private static class ArgumentMarshaler {
         private boolean booleanValue;
+        private String stringValue;
 
         public boolean getBooleanValue() {
             return booleanValue;
@@ -207,6 +209,14 @@ public class Args {
 
         public void setBooleanValue(boolean booleanValue) {
             this.booleanValue = booleanValue;
+        }
+
+        public String getStringValue() {
+            return stringValue;
+        }
+
+        public void setStringValue(String stringValue) {
+            this.stringValue = stringValue;
         }
 
         private static class BooleanArgumentMarshaller extends ArgumentMarshaler {
