@@ -83,9 +83,31 @@ class ArgsTest {
     }
 
     @Test
+    void simpleIntegerPresent() throws ParseException {
+        Integer sampleInt = 33;
+        final Args args = new Args("d#", new String[]{"-d", sampleInt.toString()});
+        assertAll("get integer",
+                () -> assertEquals(1, args.cardinality()),
+                () -> assertEquals(sampleInt.intValue(), args.getInteger('d'))
+        );
+    }
+
+    @Test
+    void missingIntegerParameter() throws Exception {
+        final Args args = new Args("d#", new String[]{"-d"});
+        assertEquals("Could not find integer parameter for: -d", args.getErrorMessage());
+    }
+
+    @Test
+    void invalidIntegerParameter() throws Exception {
+        final Args args = new Args("d#", new String[]{"-d", "33s"});
+        assertEquals("Invalid value:33s provided for integer argument:-d", args.getErrorMessage());
+    }
+
+    @Test
     void missingStringArg() throws Exception {
         Args args = new Args("x*", new String[]{"-x"});
-        assertEquals("Could not find string parameter for -x.", args.getErrorMessage());
+        assertEquals("Could not find string parameter for: -x.", args.getErrorMessage());
         assertFalse(args.isValid());
     }
 
