@@ -135,6 +135,7 @@ public class Args {
             valid = false;
             errorArgument = argChar;
             errorCode = MISSING_STRING;
+//            throw new ArgsException();
         }
     }
 
@@ -212,7 +213,7 @@ public class Args {
         }
 
         public String getStringValue() {
-            return stringValue;
+            return stringValue == null ? "" : stringValue;
         }
 
         public void setStringValue(String stringValue) {
@@ -232,4 +233,7 @@ public class Args {
         }
     }
 
+    private class ArgsException extends Throwable {
+
+    }
 }
