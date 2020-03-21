@@ -147,12 +147,12 @@ public class Args {
         String parameter = null;
         try {
             parameter = args[currentArgument];
-            intArgs.get(argChar).setIntegerValue(Integer.parseInt(parameter));
+            intArgs.get(argChar).set(parameter);
         } catch (IndexOutOfBoundsException e) {
             valid = false;
             errorArgument = argChar;
             errorCode = MISSING_INTEGER;
-        } catch (NumberFormatException e) {
+        } catch (ArgsException e) {
             valid = false;
             errorArgument = argChar;
             errorParameter = parameter;
@@ -173,6 +173,8 @@ public class Args {
             errorArgument = argChar;
             errorCode = MISSING_STRING;
 //            throw new ArgsException();
+        } catch (ArgsException e) {
+            //ignore
         }
     }
 
@@ -181,7 +183,11 @@ public class Args {
     }
 
     private void setBooleanArgument(char argChar, boolean b) {
-        this.booleanArgs.get(argChar).set("true");
+        try {
+            this.booleanArgs.get(argChar).set("true");
+        } catch (ArgsException e) {
+            //ignore
+        }
     }
 
     private boolean isBoolean(char argChar) {
@@ -207,7 +213,7 @@ public class Args {
 
     public int getInteger(char argChar) {
         final ArgumentMarshaler am = intArgs.get(argChar);
-        return am == null ? 0 : am.getIntegerValue();
+        return am == null ? 0 : (Integer) am.get();
     }
 
     public String getErrorMessage() throws ArgsException {
@@ -247,18 +253,7 @@ public class Args {
     }
 
     private abstract static class ArgumentMarshaler {
-        private int integerValue;
-
-        public void setIntegerValue(int value) {
-            this.integerValue = value;
-        }
-
-        public int getIntegerValue() {
-            return integerValue;
-        }
-
-        public abstract void set(String value);
-
+        public abstract void set(String value) throws ArgsException;
         public abstract Object get();
 
         private static class BooleanArgumentMarshaller extends ArgumentMarshaler {
@@ -292,15 +287,20 @@ public class Args {
         }
 
         private static class IntegerArgumentMarshaller extends ArgumentMarshaler {
+            private int integerValue;
 
             @Override
-            public void set(String value) {
-
+            public void set(String value) throws ArgsException {
+                try {
+                    this.integerValue = Integer.parseInt(value);
+                } catch (NumberFormatException e) {
+                    throw new ArgsException(e.getMessage());
+                }
             }
 
             @Override
             public Object get() {
-                return null;
+                return integerValue;
             }
         }
     }
@@ -309,6 +309,10 @@ public class Args {
 
         public ArgsException(String s) {
             super(s);
+        }
+
+        public ArgsException() {
+            super();
         }
     }
 }
