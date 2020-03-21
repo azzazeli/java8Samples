@@ -17,14 +17,12 @@ public class Args {
     private String[] args;
     private boolean valid;
     private Set<Character> unexpectedArguments = new TreeSet<>();
-    private Map<Character, ArgumentMarshaler> booleanArgs = new HashMap<>();
-    private Map<Character, ArgumentMarshaler> stringArgs = new HashMap<>();
+    private Map<Character, ArgumentMarshaler> argMarshalers = new HashMap<>();
     private Set<Character> argsFound = new TreeSet<>();
     private int currentArgument = 0;
     private ErrorCode errorCode = OK;
     private char errorArgument = '\0';
     private String errorParameter;
-    private Map<Character, ArgumentMarshaler> intArgs = new HashMap<>();
 
     public enum ErrorCode {
         MISSING_STRING, MISSING_INTEGER, INVALID_INTEGER, OK
@@ -59,7 +57,7 @@ public class Args {
         validateSchemaElementId(elementId);
 
         if (isaBooleanSchemaElement(element)) {
-            parseBooleanSchemaElement(element);
+            parseBooleanSchemaElement(elementId);
         } else if (isStringSchemaElement(elementTail)) {
             parseStringSchemaElement(elementId);
         } else if (isIntegerSchemaElement(elementTail)) {
@@ -68,15 +66,19 @@ public class Args {
     }
 
     private void parseIntegerSchemaElement(char elementId) {
-        intArgs.put(elementId, new ArgumentMarshaler.IntegerArgumentMarshaller());
+        argMarshalers.put(elementId, new ArgumentMarshaler.IntegerArgumentMarshaller());
+    }
+
+    private void parseBooleanSchemaElement(char elementId) {
+        argMarshalers.put(elementId, new ArgumentMarshaler.BooleanArgumentMarshaller());
+    }
+
+    private void parseStringSchemaElement(char elementId) {
+        argMarshalers.put(elementId, new ArgumentMarshaler.StringArgumentMarshaller());
     }
 
     private boolean isIntegerSchemaElement(String elementId) {
         return elementId.contains("#");
-    }
-
-    private void parseStringSchemaElement(char elementId) {
-        stringArgs.put(elementId, new ArgumentMarshaler.StringArgumentMarshaller());
     }
 
     private boolean isStringSchemaElement(String elementTail) {
@@ -85,13 +87,6 @@ public class Args {
 
     private boolean isaBooleanSchemaElement(String element) {
         return element.length() == 1;
-    }
-
-    private void parseBooleanSchemaElement(String element) {
-        final char c = element.charAt(0);
-        if (Character.isLetter(c)) {
-            booleanArgs.put(c, new ArgumentMarshaler.BooleanArgumentMarshaller());
-        }
     }
 
     private void validateSchemaElementId(char elementId) throws ParseException {
@@ -128,70 +123,51 @@ public class Args {
     }
 
     private boolean setArgument(char argChar) {
-        boolean set = false;
-        if (isBoolean(argChar)) {
-            setBooleanArgument(argChar, true);
-            set = true;
-        } else if (isString(argChar)) {
-            setStringArgument(argChar);
-            set = true;
-        } else if (isInteger(argChar)) {
-            setIntegerArgument(argChar);
-            set = true;
+        final ArgumentMarshaler am = argMarshalers.get(argChar);
+        try {
+            if (am instanceof ArgumentMarshaler.BooleanArgumentMarshaller) {
+                setBooleanArgument(am);
+            } else if (am instanceof ArgumentMarshaler.StringArgumentMarshaller) {
+                setStringArgument(am);
+            } else if (am instanceof ArgumentMarshaler.IntegerArgumentMarshaller) {
+                setIntegerArgument(am);
+            }
+            else return false;
+        } catch (ArgsException e) {
+            valid = false;
+            this.errorArgument = argChar;
         }
-        return set;
+        return true;
     }
 
-    private void setIntegerArgument(char argChar) {
+    private void setIntegerArgument(ArgumentMarshaler am) throws ArgsException {
         currentArgument++;
         String parameter = null;
         try {
             parameter = args[currentArgument];
-            intArgs.get(argChar).set(parameter);
+            am.set(parameter);
         } catch (IndexOutOfBoundsException e) {
-            valid = false;
-            errorArgument = argChar;
             errorCode = MISSING_INTEGER;
+            throw new ArgsException();
         } catch (ArgsException e) {
-            valid = false;
-            errorArgument = argChar;
             errorParameter = parameter;
             errorCode = INVALID_INTEGER;
+            throw e;
         }
     }
 
-    private boolean isInteger(char argChar) {
-        return intArgs.containsKey(argChar);
-    }
-
-    private void setStringArgument(char argChar) {
+    private void setStringArgument(ArgumentMarshaler am) throws ArgsException {
         currentArgument++;
         try {
-            stringArgs.get(argChar).set(args[currentArgument]);
+            am.set(args[currentArgument]);
         } catch (ArrayIndexOutOfBoundsException e) {
-            valid = false;
-            errorArgument = argChar;
             errorCode = MISSING_STRING;
-//            throw new ArgsException();
-        } catch (ArgsException e) {
-            //ignore
+            throw new ArgsException();
         }
     }
 
-    private boolean isString(char argChar) {
-        return stringArgs.containsKey(argChar);
-    }
-
-    private void setBooleanArgument(char argChar, boolean b) {
-        try {
-            this.booleanArgs.get(argChar).set("true");
-        } catch (ArgsException e) {
-            //ignore
-        }
-    }
-
-    private boolean isBoolean(char argChar) {
-        return booleanArgs.containsKey(argChar);
+    private void setBooleanArgument(ArgumentMarshaler am) throws ArgsException {
+        am.set("true");
     }
 
     public String usage() {
@@ -202,17 +178,17 @@ public class Args {
     }
 
     public boolean getBoolean(char argChar) {
-        final ArgumentMarshaler am = booleanArgs.get(argChar);
+        final ArgumentMarshaler am = argMarshalers.get(argChar);
         return am != null && (Boolean) am.get();
     }
 
     public String getString(char argChar) {
-        final ArgumentMarshaler am = stringArgs.get(argChar);
+        final ArgumentMarshaler am = argMarshalers.get(argChar);
         return am == null ? "" : (String) am.get();
     }
 
     public int getInteger(char argChar) {
-        final ArgumentMarshaler am = intArgs.get(argChar);
+        final ArgumentMarshaler am = argMarshalers.get(argChar);
         return am == null ? 0 : (Integer) am.get();
     }
 
