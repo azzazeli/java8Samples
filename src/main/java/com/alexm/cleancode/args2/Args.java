@@ -198,7 +198,7 @@ public class Args {
 
     public boolean getBoolean(char argChar) {
         final ArgumentMarshaler am = booleanArgs.get(argChar);
-        return am != null && am.getBooleanValue();
+        return am != null && (Boolean) am.get();
     }
 
     public String getString(char argChar) {
@@ -277,12 +277,18 @@ public class Args {
         }
 
         public abstract void set(String value);
+        public abstract Object get();
 
         private static class BooleanArgumentMarshaller extends ArgumentMarshaler {
 
             @Override
             public void set(String value) {
                 this.booleanValue = true;
+            }
+
+            @Override
+            public Object get() {
+                return booleanValue;
             }
         }
 
@@ -292,6 +298,11 @@ public class Args {
             public void set(String value) {
 
             }
+
+            @Override
+            public Object get() {
+                return null;
+            }
         }
 
         private static class IntegerArgumentMarshaller extends ArgumentMarshaler {
@@ -299,6 +310,11 @@ public class Args {
             @Override
             public void set(String value) {
 
+            }
+
+            @Override
+            public Object get() {
+                return null;
             }
         }
     }
