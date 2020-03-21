@@ -46,7 +46,7 @@ public class Args {
     }
 
     private void parseSchema() throws ParseException {
-        for (String element: schema.split(",")) {
+        for (String element : schema.split(",")) {
             if (!element.trim().isEmpty()) {
                 parseSchemaElement(element.trim());
             }
@@ -95,13 +95,13 @@ public class Args {
     }
 
     private void validateSchemaElementId(char elementId) throws ParseException {
-            if (!Character.isLetter(elementId)) {
+        if (!Character.isLetter(elementId)) {
             throw new ParseException("Bad character:" + elementId + " in Args format:" + schema, 0);
         }
     }
 
     private void parseArguments() {
-        for(currentArgument = 0; currentArgument < args.length; currentArgument++) {
+        for (currentArgument = 0; currentArgument < args.length; currentArgument++) {
             parseArgument(args[currentArgument]);
         }
     }
@@ -113,13 +113,13 @@ public class Args {
     }
 
     private void parseElements(String arg) {
-        for(int i = 1; i < arg.length(); i++) {
+        for (int i = 1; i < arg.length(); i++) {
             parseElement(arg.charAt(i));
         }
     }
 
     private void parseElement(char argChar) {
-        if(setArgument(argChar)) {
+        if (setArgument(argChar)) {
             argsFound.add(argChar);
         } else {
             unexpectedArguments.add(argChar);
@@ -132,11 +132,10 @@ public class Args {
         if (isBoolean(argChar)) {
             setBooleanArgument(argChar, true);
             set = true;
-        } else if(isString(argChar)) {
+        } else if (isString(argChar)) {
             setStringArgument(argChar);
             set = true;
-        }
-        else if (isInteger(argChar)) {
+        } else if (isInteger(argChar)) {
             setIntegerArgument(argChar);
             set = true;
         }
@@ -168,7 +167,7 @@ public class Args {
     private void setStringArgument(char argChar) {
         currentArgument++;
         try {
-            stringArgs.get(argChar).setStringValue(args[currentArgument]);
+            stringArgs.get(argChar).set(args[currentArgument]);
         } catch (ArrayIndexOutOfBoundsException e) {
             valid = false;
             errorArgument = argChar;
@@ -203,7 +202,7 @@ public class Args {
 
     public String getString(char argChar) {
         final ArgumentMarshaler am = stringArgs.get(argChar);
-        return am == null ? "" : am.getStringValue();
+        return am == null ? "" : (String) am.get();
     }
 
     public int getInteger(char argChar) {
@@ -211,7 +210,7 @@ public class Args {
         return am == null ? 0 : am.getIntegerValue();
     }
 
-    public String getErrorMessage() throws Exception {
+    public String getErrorMessage() throws ArgsException {
         if (!unexpectedArguments.isEmpty()) {
             return unexpectedArgumentMessage();
         } else {
@@ -223,7 +222,7 @@ public class Args {
                 case INVALID_INTEGER:
                     return String.format("Invalid value:%s provided for integer argument:-%c", errorParameter, errorArgument);
                 case OK:
-                    throw new Exception("TILT: Should not get here");
+                    throw new ArgsException("TILT: Should not get here");
             }
         }
         return "";
@@ -248,25 +247,7 @@ public class Args {
     }
 
     private abstract static class ArgumentMarshaler {
-        protected boolean booleanValue;
-        private String stringValue;
         private int integerValue;
-
-        public boolean getBooleanValue() {
-            return booleanValue;
-        }
-
-        public void setBooleanValue(boolean booleanValue) {
-            this.booleanValue = booleanValue;
-        }
-
-        public String getStringValue() {
-            return stringValue == null ? "" : stringValue;
-        }
-
-        public void setStringValue(String stringValue) {
-            this.stringValue = stringValue;
-        }
 
         public void setIntegerValue(int value) {
             this.integerValue = value;
@@ -277,9 +258,11 @@ public class Args {
         }
 
         public abstract void set(String value);
+
         public abstract Object get();
 
         private static class BooleanArgumentMarshaller extends ArgumentMarshaler {
+            private boolean booleanValue;
 
             @Override
             public void set(String value) {
@@ -293,15 +276,18 @@ public class Args {
         }
 
         private static class StringArgumentMarshaller extends ArgumentMarshaler {
+            private String stringValue = "";
 
             @Override
             public void set(String value) {
-
+                if (value != null) {
+                    this.stringValue = value;
+                }
             }
 
             @Override
             public Object get() {
-                return null;
+                return stringValue == null ? "" : stringValue;
             }
         }
 
@@ -319,7 +305,10 @@ public class Args {
         }
     }
 
-    private class ArgsException extends Throwable {
+    public static class ArgsException extends Exception {
 
+        public ArgsException(String s) {
+            super(s);
+        }
     }
 }

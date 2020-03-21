@@ -93,13 +93,13 @@ class ArgsTest {
     }
 
     @Test
-    void missingIntegerParameter() throws Exception {
+    void missingIntegerParameter() throws Args.ArgsException, ParseException {
         final Args args = new Args("d#", new String[]{"-d"});
         assertEquals("Could not find integer parameter for: -d", args.getErrorMessage());
     }
 
     @Test
-    void invalidIntegerParameter() throws Exception {
+    void invalidIntegerParameter() throws Args.ArgsException, ParseException {
         final Args args = new Args("d#", new String[]{"-d", "33s"});
         assertEquals("Invalid value:33s provided for integer argument:-d", args.getErrorMessage());
     }
