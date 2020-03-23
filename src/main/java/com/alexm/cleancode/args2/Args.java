@@ -48,37 +48,13 @@ public class Args {
         String elementTail = element.substring(1);
         validateSchemaElementId(elementId);
 
-        if (isaBooleanSchemaElement(element)) {
-            parseBooleanSchemaElement(elementId);
-        } else if (isStringSchemaElement(elementTail)) {
-            parseStringSchemaElement(elementId);
-        } else if (isIntegerSchemaElement(elementTail)) {
-            parseIntegerSchemaElement(elementId);
+        if (element.length() == 1) {
+            argMarshalers.put(elementId, new ArgumentMarshaler.BooleanArgumentMarshaller());
+        } else if (elementTail.contains("*")) {
+            argMarshalers.put(elementId, new ArgumentMarshaler.StringArgumentMarshaller());
+        } else if (element.contains("#")) {
+            argMarshalers.put(elementId, new ArgumentMarshaler.IntegerArgumentMarshaller());
         }
-    }
-
-    private void parseIntegerSchemaElement(char elementId) {
-        argMarshalers.put(elementId, new ArgumentMarshaler.IntegerArgumentMarshaller());
-    }
-
-    private void parseBooleanSchemaElement(char elementId) {
-        argMarshalers.put(elementId, new ArgumentMarshaler.BooleanArgumentMarshaller());
-    }
-
-    private void parseStringSchemaElement(char elementId) {
-        argMarshalers.put(elementId, new ArgumentMarshaler.StringArgumentMarshaller());
-    }
-
-    private boolean isIntegerSchemaElement(String elementId) {
-        return elementId.contains("#");
-    }
-
-    private boolean isStringSchemaElement(String elementTail) {
-        return elementTail.contains("*");
-    }
-
-    private boolean isaBooleanSchemaElement(String element) {
-        return element.length() == 1;
     }
 
     private void validateSchemaElementId(char elementId) throws ParseException {
