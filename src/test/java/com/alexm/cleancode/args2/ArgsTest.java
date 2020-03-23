@@ -17,25 +17,25 @@ import static org.mockito.Matchers.*;
 class ArgsTest {
 
     @Test
-    void noSchemaNoArguments() throws ParseException {
+    void noSchemaNoArguments() throws ParseException, ArgsException {
         Args args = new Args("", new String[0]);
         assertThat(args.cardinality(), is(eq(0)));
     }
 
     @Test
     void noSchemaOneArgument() throws Exception {
-        Args args = new Args("", new String[]{"-x"});
-        assertEquals("Argument (s) - x unexpected.", args.getErrorMessage());
+        final ArgsException argsException = assertThrows(ArgsException.class, () ->  new Args("", new String[]{"-x"}));
+        assertEquals("Unexpected argument:x found.", argsException.getErrorMessage());
     }
 
     @Test
-    void noSchemaMultipleArguments() throws Exception {
-        Args args = new Args("", new String[]{"-x", "-y"});
-        assertEquals("Argument (s) - x y unexpected.", args.getErrorMessage());
+    void noSchemaMultipleArguments() {
+        final ArgsException argsException = assertThrows(ArgsException.class, () -> new Args("", new String[]{"-x", "-y"}));
+        assertEquals("Unexpected argument:x found.", argsException.getErrorMessage());
     }
 
     @Test
-    void spaceInSchema() throws ParseException {
+    void spaceInSchema() throws ParseException, ArgsException {
         final Args args = new Args("k,     p,          d", new String[]{"-kpd"});
         assertAll("space",
                 () -> assertEquals(3, args.cardinality()));
@@ -49,13 +49,13 @@ class ArgsTest {
     }
 
     @Test
-    void invalidArgumentFormat() throws ParseException {
+    void invalidArgumentFormat() throws ParseException, ArgsException {
         Args args = new Args("t%", new String[]{});
         //todo: implement me
     }
 
     @Test
-    void simpleBooleanPresent() throws ParseException {
+    void simpleBooleanPresent() throws ParseException, ArgsException {
         Args args = new Args("x", new String[]{"-x"});
         assertAll("",
                 () -> assertEquals(1, args.cardinality()),
@@ -64,7 +64,7 @@ class ArgsTest {
     }
 
     @Test
-    void booleanAndStringPresent() throws ParseException {
+    void booleanAndStringPresent() throws ParseException, ArgsException {
         Args args = new Args("l,x*", new String[]{"-l", "-x", "test"});
         assertAll("",
                 () -> assertEquals(2, args.cardinality()),
@@ -74,7 +74,7 @@ class ArgsTest {
     }
 
     @Test
-    void simpleStringPresent() throws ParseException {
+    void simpleStringPresent() throws ParseException, ArgsException {
         Args args = new Args("x*", new String[]{"-x",  "test"});
         assertAll("",
                 () -> assertEquals(1, args.cardinality()),
@@ -83,7 +83,7 @@ class ArgsTest {
     }
 
     @Test
-    void simpleIntegerPresent() throws ParseException {
+    void simpleIntegerPresent() throws ParseException, ArgsException {
         Integer sampleInt = 33;
         final Args args = new Args("d#", new String[]{"-d", sampleInt.toString()});
         assertAll("get integer",
@@ -112,7 +112,7 @@ class ArgsTest {
     }
 
     @Test
-    void spaceInFormat() throws ParseException {
+    void spaceInFormat() throws ParseException, ArgsException {
         Args args = new Args("x,h", new String[]{"-xh"});
         assertAll("",
                 () -> assertEquals(2, args.cardinality()),
@@ -122,7 +122,7 @@ class ArgsTest {
     }
 
     @Test
-    void usage() throws ParseException {
+    void usage() throws ParseException, ArgsException {
         Args args = new Args("x,h", new String[]{"-xh"});
         assertEquals("-[x,h]", args.usage());
         args = new Args("", new String[]{});
@@ -130,9 +130,9 @@ class ArgsTest {
     }
 
     @Test
-    void getBooleanForMissingArg() throws ParseException {
-        final Args args = new Args("", new String[]{"-xc"});
-        assertFalse(args.getBoolean('v'));
+    void getBooleanForMissingArg() throws ParseException, ArgsException {
+        final ArgsException argsException = assertThrows(ArgsException.class, () -> new Args("", new String[]{"-xc"}));
+        assertEquals("Unexpected argument:x found.", argsException.getErrorMessage());
     }
 
 }

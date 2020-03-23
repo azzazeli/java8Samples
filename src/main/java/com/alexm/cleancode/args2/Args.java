@@ -21,13 +21,13 @@ public class Args {
     private char errorArgument = '\0';
     private static String errorParameter;
 
-    public Args(String schema, String[] args) throws ParseException {
+    public Args(String schema, String[] args) throws ParseException, ArgsException {
         this.schema = schema;
         this.argsList = Arrays.asList(args);
         this.valid = parse();
     }
 
-    private boolean parse() throws ParseException {
+    private boolean parse() throws ParseException, ArgsException {
         if (schema.length() == 0 && argsList.size() == 0) {
             return true;
         }
@@ -88,25 +88,25 @@ public class Args {
         }
     }
 
-    private void parseArguments() {
+    private void parseArguments() throws ArgsException {
         for(currentArgIterator = argsList.iterator(); currentArgIterator.hasNext();) {
             parseArgument(currentArgIterator.next());
         }
     }
 
-    private void parseArgument(String arg) {
+    private void parseArgument(String arg) throws ArgsException {
         if (arg.startsWith("-")) {
             parseElements(arg);
         }
     }
 
-    private void parseElements(String arg) {
+    private void parseElements(String arg) throws ArgsException {
         for (int i = 1; i < arg.length(); i++) {
             parseElement(arg.charAt(i));
         }
     }
 
-    private void parseElement(char argChar) {
+    private void parseElement(char argChar) throws ArgsException {
         if (setArgument(argChar)) {
             argsFound.add(argChar);
         } else {
@@ -115,10 +115,10 @@ public class Args {
         }
     }
 
-    private boolean setArgument(char argChar) {
+    private boolean setArgument(char argChar) throws ArgsException {
         final ArgumentMarshaler am = argMarshalers.get(argChar);
         if (am == null) {
-            return false;
+            throw new ArgsException(UNEXPECTED_ARGUMENT, argChar);
         }
         try {
             am.set(currentArgIterator);
