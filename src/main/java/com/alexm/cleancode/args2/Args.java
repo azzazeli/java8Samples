@@ -14,7 +14,6 @@ public class Args {
     private List<String> argsList;
     private Iterator<String> currentArgIterator;
     private boolean valid;
-    private Set<Character> unexpectedArguments = new TreeSet<>();
     private Map<Character, ArgumentMarshaler> argMarshalers = new HashMap<>();
     private Set<Character> argsFound = new TreeSet<>();
     protected static ArgsException.ErrorCode errorCode = OK;
@@ -28,7 +27,7 @@ public class Args {
     }
 
     private boolean parse() throws ParseException, ArgsException {
-        if (schema.length() == 0 && argsList.size() == 0) {
+        if (schema.length() == 0 && argsList.isEmpty()) {
             return true;
         }
         parseSchema();
@@ -110,7 +109,6 @@ public class Args {
         if (setArgument(argChar)) {
             argsFound.add(argChar);
         } else {
-            unexpectedArguments.add(argChar);
             valid = false;
         }
     }
@@ -152,31 +150,17 @@ public class Args {
     }
 
     public String getErrorMessage() throws ArgsException {
-        if (!unexpectedArguments.isEmpty()) {
-            return unexpectedArgumentMessage();
-        } else {
-            switch (errorCode) {
-                case MISSING_STRING:
-                    return String.format("Could not find string parameter for: -%c.", errorArgument);
-                case MISSING_INTEGER:
-                    return String.format("Could not find integer parameter for: -%c", errorArgument);
-                case INVALID_INTEGER:
-                    return String.format("Invalid value:%s provided for integer argument:-%c", errorParameter, errorArgument);
-                case OK:
-                    throw new ArgsException("TILT: Should not get here");
-            }
+        switch (errorCode) {
+            case MISSING_STRING:
+                return String.format("Could not find string parameter for: -%c.", errorArgument);
+            case MISSING_INTEGER:
+                return String.format("Could not find integer parameter for: -%c", errorArgument);
+            case INVALID_INTEGER:
+                return String.format("Invalid value:%s provided for integer argument:-%c", errorParameter, errorArgument);
+            case OK:
+                throw new ArgsException("TILT: Should not get here");
         }
         return "";
-    }
-
-    private String unexpectedArgumentMessage() {
-        StringBuilder sb = new StringBuilder("Argument (s) -");
-        for (Character unexpectedArgument : unexpectedArguments) {
-            sb.append(" ");
-            sb.append(unexpectedArgument);
-        }
-        sb.append(" unexpected.");
-        return sb.toString();
     }
 
     public int cardinality() {
