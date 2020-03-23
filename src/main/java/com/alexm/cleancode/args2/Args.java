@@ -3,7 +3,7 @@ package com.alexm.cleancode.args2;
 import java.text.ParseException;
 import java.util.*;
 
-import static com.alexm.cleancode.args2.Args.ErrorCode.*;
+import static com.alexm.cleancode.args2.ArgsException.ErrorCode.*;
 
 /**
  * @author AlexM
@@ -17,13 +17,9 @@ public class Args {
     private Set<Character> unexpectedArguments = new TreeSet<>();
     private Map<Character, ArgumentMarshaler> argMarshalers = new HashMap<>();
     private Set<Character> argsFound = new TreeSet<>();
-    protected static ErrorCode errorCode = OK;
+    protected static ArgsException.ErrorCode errorCode = OK;
     private char errorArgument = '\0';
     private static String errorParameter;
-
-    public enum ErrorCode {
-        MISSING_STRING, MISSING_INTEGER, INVALID_INTEGER, OK
-    }
 
     public Args(String schema, String[] args) throws ParseException {
         this.schema = schema;
@@ -218,7 +214,7 @@ public class Args {
                     stringValue = currentArgument.next();
                 } catch (NoSuchElementException e) {
                     errorCode = MISSING_STRING;
-                    throw new ArgsException();
+                    throw new ArgsException(errorCode);
                 }
             }
 
@@ -239,11 +235,11 @@ public class Args {
                     integerValue = Integer.parseInt(parameter);
                 } catch (NoSuchElementException e) {
                     errorCode = MISSING_INTEGER;
-                    throw new ArgsException();
+                    throw new ArgsException(errorCode);
                 } catch (NumberFormatException e) {
                     errorParameter = parameter;
                     errorCode = INVALID_INTEGER;
-                    throw new ArgsException();
+                    throw new ArgsException(errorCode);
                 }
             }
 
@@ -254,14 +250,4 @@ public class Args {
         }
     }
 
-    public static class ArgsException extends Exception {
-
-        public ArgsException(String s) {
-            super(s);
-        }
-
-        public ArgsException() {
-            super();
-        }
-    }
 }
