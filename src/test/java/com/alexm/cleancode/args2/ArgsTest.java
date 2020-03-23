@@ -43,7 +43,7 @@ class ArgsTest {
     void nonLetterSchema() {
         final ArgsException ex = assertThrows(ArgsException.class,
                 () -> new Args("*333", new String[]{}));
-        assertThat(ex.getMessage(), is("Bad character:* in Args format:*333"));
+        assertThat(ex.getErrorMessage(), is("Bad character:* in schema format."));
     }
 
     @Test

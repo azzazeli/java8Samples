@@ -7,34 +7,41 @@ import static com.alexm.cleancode.args2.ArgsException.ErrorCode.OK;
  * Date: 3/23/20
  **/
 public class ArgsException extends Exception {
-    private ErrorCode errorCode = OK;
-    private char errorArgument = '\0';
-    private String errorParameter;
+    private static final ErrorCode DEFAULT_ERROR_CODE = OK;
+    private static final char DEFAULT_ERROR_ARGUMENT = '\0';
 
-    public ArgsException(ErrorCode errorCode, String errorParameter) {
-        this.errorCode = errorCode;
-        this.errorParameter = errorParameter;
-    }
+    private final ErrorCode errorCode;
+    private final char errorArgument;
+    private final String errorParameter;
 
     public enum ErrorCode {
         MISSING_STRING,
         MISSING_INTEGER,
         INVALID_INTEGER,
         UNEXPECTED_ARGUMENT,
+        INVALID_ARGUMENT_NAME,
         OK
     }
-    public ArgsException(ErrorCode errorCode, char errorArgument) {
-        this.errorCode = errorCode;
+
+    public ArgsException(ErrorCode errorCode, char errorArgument, String errorParameter) {
+        super();
+        this.errorCode = errorCode == null ? DEFAULT_ERROR_CODE : errorCode;
         this.errorArgument = errorArgument;
+        this.errorParameter = errorParameter;
+    }
+
+    public ArgsException(ErrorCode errorCode, String errorParameter) {
+        this(errorCode, DEFAULT_ERROR_ARGUMENT, errorParameter);
+    }
+
+    public ArgsException(ErrorCode errorCode, char errorArgument) {
+        this(errorCode, errorArgument, null);
     }
 
     public ArgsException(ErrorCode errorCode) {
-        this.errorCode = errorCode;
+        this(errorCode, DEFAULT_ERROR_ARGUMENT, null);
     }
 
-    public ArgsException(String s) {
-        super(s);
-    }
 
     public String getErrorMessage() {
         switch (errorCode) {
@@ -44,13 +51,19 @@ public class ArgsException extends Exception {
                 return String.format("Could not find integer parameter for: -%c", errorArgument);
             case INVALID_INTEGER:
                 return String.format("Invalid value:%s provided for integer argument:-%c", errorParameter, errorArgument);
+            case INVALID_ARGUMENT_NAME:
+                return String.format("Bad character:%s in schema format.", errorArgument);
             case OK:
                 return "TILT: Should not get here";
         }
         return "";
     }
 
-    public void setErrorArgument(char errorArgument) {
-        this.errorArgument = errorArgument;
+    public ErrorCode getErrorCode() {
+        return errorCode;
+    }
+
+    public String getErrorParameter() {
+        return errorParameter;
     }
 }

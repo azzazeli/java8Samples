@@ -55,7 +55,7 @@ public class Args {
 
     private void validateSchemaElementId(char elementId) throws ArgsException {
         if (!Character.isLetter(elementId)) {
-            throw new ArgsException("Bad character:" + elementId + " in Args format:" + schema);
+            throw new ArgsException(INVALID_ARGUMENT_NAME, elementId);
         }
     }
 
@@ -87,8 +87,7 @@ public class Args {
             argsFound.add(argChar);
         } catch (ArgsException e) {
             valid = false;
-            e.setErrorArgument(argChar);
-            throw e;
+            throw new ArgsException(e.getErrorCode(), argChar, e.getErrorParameter());
         }
     }
 
