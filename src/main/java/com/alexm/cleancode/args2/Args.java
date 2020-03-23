@@ -16,9 +16,6 @@ public class Args {
     private boolean valid;
     private Map<Character, ArgumentMarshaler> argMarshalers = new HashMap<>();
     private Set<Character> argsFound = new TreeSet<>();
-    protected static ArgsException.ErrorCode errorCode = OK;
-    private char errorArgument = '\0';
-    private static String errorParameter;
 
     public Args(String schema, String[] args) throws ParseException, ArgsException {
         this.schema = schema;
@@ -118,18 +115,6 @@ public class Args {
         return am == null ? 0 : (Integer) am.get();
     }
 
-    public String getErrorMessage() throws ArgsException {
-        switch (errorCode) {
-            case MISSING_INTEGER:
-                return String.format("Could not find integer parameter for: -%c", errorArgument);
-            case INVALID_INTEGER:
-                return String.format("Invalid value:%s provided for integer argument:-%c", errorParameter, errorArgument);
-            case OK:
-                throw new ArgsException("TILT: Should not get here");
-        }
-        return "";
-    }
-
     public int cardinality() {
         return argsFound.size();
     }
@@ -164,8 +149,7 @@ public class Args {
                 try {
                     stringValue = currentArgument.next();
                 } catch (NoSuchElementException e) {
-                    errorCode = MISSING_STRING;
-                    throw new ArgsException(errorCode);
+                    throw new ArgsException(MISSING_STRING);
                 }
             }
 
@@ -185,12 +169,9 @@ public class Args {
                     parameter = currentArgument.next();
                     integerValue = Integer.parseInt(parameter);
                 } catch (NoSuchElementException e) {
-                    errorCode = MISSING_INTEGER;
-                    throw new ArgsException(errorCode);
+                    throw new ArgsException(MISSING_INTEGER);
                 } catch (NumberFormatException e) {
-                    errorParameter = parameter;
-                    errorCode = INVALID_INTEGER;
-                    throw new ArgsException(errorCode);
+                    throw new ArgsException(INVALID_INTEGER, parameter);
                 }
             }
 

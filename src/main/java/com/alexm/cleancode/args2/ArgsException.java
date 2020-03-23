@@ -9,6 +9,12 @@ import static com.alexm.cleancode.args2.ArgsException.ErrorCode.OK;
 public class ArgsException extends Exception {
     private ErrorCode errorCode = OK;
     private char errorArgument = '\0';
+    private String errorParameter;
+
+    public ArgsException(ErrorCode errorCode, String errorParameter) {
+        this.errorCode = errorCode;
+        this.errorParameter = errorParameter;
+    }
 
     public enum ErrorCode {
         MISSING_STRING,
@@ -39,6 +45,12 @@ public class ArgsException extends Exception {
         switch (errorCode) {
             case UNEXPECTED_ARGUMENT: return String.format("Unexpected argument:%c found.", errorArgument);
             case MISSING_STRING: return String.format("Could not find string parameter for: -%c.", errorArgument);
+            case MISSING_INTEGER:
+                return String.format("Could not find integer parameter for: -%c", errorArgument);
+            case INVALID_INTEGER:
+                return String.format("Invalid value:%s provided for integer argument:-%c", errorParameter, errorArgument);
+            case OK:
+                return "TILT: Should not get here";
         }
         return "";
     }
