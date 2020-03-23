@@ -105,10 +105,9 @@ class ArgsTest {
     }
 
     @Test
-    void missingStringArg() throws Exception {
-        Args args = new Args("x*", new String[]{"-x"});
-        assertEquals("Could not find string parameter for: -x.", args.getErrorMessage());
-        assertFalse(args.isValid());
+    void missingStringArg() {
+        final ArgsException argsException = assertThrows(ArgsException.class, () -> new Args("x*", new String[]{"-x"}));
+        assertEquals("Could not find string parameter for: -x.", argsException.getErrorMessage());
     }
 
     @Test

@@ -91,7 +91,8 @@ public class Args {
             argsFound.add(argChar);
         } catch (ArgsException e) {
             valid = false;
-            this.errorArgument = argChar;
+            e.setErrorArgument(argChar);
+            throw e;
         }
     }
 
@@ -119,8 +120,6 @@ public class Args {
 
     public String getErrorMessage() throws ArgsException {
         switch (errorCode) {
-            case MISSING_STRING:
-                return String.format("Could not find string parameter for: -%c.", errorArgument);
             case MISSING_INTEGER:
                 return String.format("Could not find integer parameter for: -%c", errorArgument);
             case INVALID_INTEGER:

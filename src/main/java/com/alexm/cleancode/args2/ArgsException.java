@@ -38,7 +38,12 @@ public class ArgsException extends Exception {
     public String getErrorMessage() {
         switch (errorCode) {
             case UNEXPECTED_ARGUMENT: return String.format("Unexpected argument:%c found.", errorArgument);
+            case MISSING_STRING: return String.format("Could not find string parameter for: -%c.", errorArgument);
         }
         return "";
+    }
+
+    public void setErrorArgument(char errorArgument) {
+        this.errorArgument = errorArgument;
     }
 }
