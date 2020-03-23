@@ -82,25 +82,17 @@ public class Args {
     }
 
     private void parseElement(char argChar) throws ArgsException {
-        if (setArgument(argChar)) {
-            argsFound.add(argChar);
-        } else {
-            valid = false;
-        }
-    }
-
-    private boolean setArgument(char argChar) throws ArgsException {
         final ArgumentMarshaler am = argMarshalers.get(argChar);
         if (am == null) {
             throw new ArgsException(UNEXPECTED_ARGUMENT, argChar);
         }
         try {
             am.set(currentArgIterator);
+            argsFound.add(argChar);
         } catch (ArgsException e) {
             valid = false;
             this.errorArgument = argChar;
         }
-        return true;
     }
 
     public String usage() {
