@@ -1,6 +1,5 @@
 package com.alexm.cleancode.args2;
 
-import java.text.ParseException;
 import java.util.*;
 
 import static com.alexm.cleancode.args2.ArgsException.ErrorCode.*;
@@ -17,13 +16,13 @@ public class Args {
     private Map<Character, ArgumentMarshaler> argMarshalers = new HashMap<>();
     private Set<Character> argsFound = new TreeSet<>();
 
-    public Args(String schema, String[] args) throws ParseException, ArgsException {
+    public Args(String schema, String[] args) throws ArgsException {
         this.schema = schema;
         this.argsList = Arrays.asList(args);
         this.valid = parse();
     }
 
-    private boolean parse() throws ParseException, ArgsException {
+    private boolean parse() throws ArgsException {
         if (schema.length() == 0 && argsList.isEmpty()) {
             return true;
         }
@@ -32,7 +31,7 @@ public class Args {
         return valid;
     }
 
-    private void parseSchema() throws ParseException {
+    private void parseSchema() throws ArgsException {
         for (String element : schema.split(",")) {
             if (!element.trim().isEmpty()) {
                 parseSchemaElement(element.trim());
@@ -40,7 +39,7 @@ public class Args {
         }
     }
 
-    private void parseSchemaElement(String element) throws ParseException {
+    private void parseSchemaElement(String element) throws ArgsException {
         final char elementId = element.charAt(0);
         String elementTail = element.substring(1);
         validateSchemaElementId(elementId);
@@ -54,9 +53,9 @@ public class Args {
         }
     }
 
-    private void validateSchemaElementId(char elementId) throws ParseException {
+    private void validateSchemaElementId(char elementId) throws ArgsException {
         if (!Character.isLetter(elementId)) {
-            throw new ParseException("Bad character:" + elementId + " in Args format:" + schema, 0);
+            throw new ArgsException("Bad character:" + elementId + " in Args format:" + schema);
         }
     }
 

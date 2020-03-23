@@ -2,8 +2,6 @@ package com.alexm.cleancode.args2;
 
 import org.junit.jupiter.api.Test;
 
-import java.text.ParseException;
-
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -17,13 +15,13 @@ import static org.mockito.Matchers.*;
 class ArgsTest {
 
     @Test
-    void noSchemaNoArguments() throws ParseException, ArgsException {
+    void noSchemaNoArguments() throws ArgsException {
         Args args = new Args("", new String[0]);
         assertThat(args.cardinality(), is(eq(0)));
     }
 
     @Test
-    void noSchemaOneArgument() throws Exception {
+    void noSchemaOneArgument() {
         final ArgsException argsException = assertThrows(ArgsException.class, () ->  new Args("", new String[]{"-x"}));
         assertEquals("Unexpected argument:x found.", argsException.getErrorMessage());
     }
@@ -35,27 +33,27 @@ class ArgsTest {
     }
 
     @Test
-    void spaceInSchema() throws ParseException, ArgsException {
+    void spaceInSchema() throws ArgsException {
         final Args args = new Args("k,     p,          d", new String[]{"-kpd"});
         assertAll("space",
                 () -> assertEquals(3, args.cardinality()));
     }
 
     @Test
-    void nonLetterSchema() throws ParseException {
-        final ParseException ex = assertThrows(ParseException.class,
+    void nonLetterSchema() {
+        final ArgsException ex = assertThrows(ArgsException.class,
                 () -> new Args("*333", new String[]{}));
         assertThat(ex.getMessage(), is("Bad character:* in Args format:*333"));
     }
 
     @Test
-    void invalidArgumentFormat() throws ParseException, ArgsException {
+    void invalidArgumentFormat() throws ArgsException {
         Args args = new Args("t%", new String[]{});
         //todo: implement me
     }
 
     @Test
-    void simpleBooleanPresent() throws ParseException, ArgsException {
+    void simpleBooleanPresent() throws ArgsException {
         Args args = new Args("x", new String[]{"-x"});
         assertAll("",
                 () -> assertEquals(1, args.cardinality()),
@@ -64,7 +62,7 @@ class ArgsTest {
     }
 
     @Test
-    void booleanAndStringPresent() throws ParseException, ArgsException {
+    void booleanAndStringPresent() throws ArgsException {
         Args args = new Args("l,x*", new String[]{"-l", "-x", "test"});
         assertAll("",
                 () -> assertEquals(2, args.cardinality()),
@@ -74,7 +72,7 @@ class ArgsTest {
     }
 
     @Test
-    void simpleStringPresent() throws ParseException, ArgsException {
+    void simpleStringPresent() throws ArgsException {
         Args args = new Args("x*", new String[]{"-x",  "test"});
         assertAll("",
                 () -> assertEquals(1, args.cardinality()),
@@ -83,7 +81,7 @@ class ArgsTest {
     }
 
     @Test
-    void simpleIntegerPresent() throws ParseException, ArgsException {
+    void simpleIntegerPresent() throws ArgsException {
         Integer sampleInt = 33;
         final Args args = new Args("d#", new String[]{"-d", sampleInt.toString()});
         assertAll("get integer",
@@ -111,7 +109,7 @@ class ArgsTest {
     }
 
     @Test
-    void spaceInFormat() throws ParseException, ArgsException {
+    void spaceInFormat() throws ArgsException {
         Args args = new Args("x,h", new String[]{"-xh"});
         assertAll("",
                 () -> assertEquals(2, args.cardinality()),
@@ -121,7 +119,7 @@ class ArgsTest {
     }
 
     @Test
-    void usage() throws ParseException, ArgsException {
+    void usage() throws ArgsException {
         Args args = new Args("x,h", new String[]{"-xh"});
         assertEquals("-[x,h]", args.usage());
         args = new Args("", new String[]{});
@@ -129,7 +127,7 @@ class ArgsTest {
     }
 
     @Test
-    void getBooleanForMissingArg() throws ParseException, ArgsException {
+    void getBooleanForMissingArg() {
         final ArgsException argsException = assertThrows(ArgsException.class, () -> new Args("", new String[]{"-xc"}));
         assertEquals("Unexpected argument:x found.", argsException.getErrorMessage());
     }

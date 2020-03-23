@@ -36,11 +36,6 @@ public class ArgsException extends Exception {
         super(s);
     }
 
-    public ArgsException() {
-        super();
-    }
-
-
     public String getErrorMessage() {
         switch (errorCode) {
             case UNEXPECTED_ARGUMENT: return String.format("Unexpected argument:%c found.", errorArgument);
