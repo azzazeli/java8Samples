@@ -28,7 +28,7 @@ public class Args {
         }
         parseSchema();
         parseArguments();
-        return valid;
+        return true;
     }
 
     private void parseSchema() throws ArgsException {
@@ -46,10 +46,12 @@ public class Args {
 
         if (element.length() == 1) {
             argMarshalers.put(elementId, new BooleanArgumentMarshaller());
-        } else if (elementTail.contains("*")) {
+        } else if (elementTail.equals("*")) {
             argMarshalers.put(elementId, new StringArgumentMarshaller());
-        } else if (element.contains("#")) {
+        } else if (elementTail.equals("#")) {
             argMarshalers.put(elementId, new IntegerArgumentMarshaller());
+        } else if (elementTail.equals("##")) {
+            argMarshalers.put(elementId, new DoubleArgumentMarshaller());
         }
     }
 
@@ -113,6 +115,11 @@ public class Args {
         return am == null ? 0 : (Integer) am.get();
     }
 
+    public double getDouble(char argChar) {
+        final ArgumentMarshaler am = argMarshalers.get(argChar);
+        return am == null ? 0.0 : (Double) am.get();
+    }
+
     public int cardinality() {
         return argsFound.size();
     }
@@ -121,4 +128,7 @@ public class Args {
         return valid;
     }
 
+    public boolean has(char arg) {
+        return argsFound.contains(arg);
+    }
 }

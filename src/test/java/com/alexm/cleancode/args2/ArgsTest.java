@@ -2,10 +2,9 @@ package com.alexm.cleancode.args2;
 
 import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.*;
 
 /**
@@ -131,5 +130,15 @@ class ArgsTest {
         final ArgsException argsException = assertThrows(ArgsException.class, () -> new Args("", new String[]{"-xc"}));
         assertEquals("Unexpected argument:x found.", argsException.getErrorMessage());
     }
+
+    @Test
+    void simpleDoublePresent() throws ArgsException {
+        final Args args = new Args("d##", new String[]{"-d", "2.33"});
+        assertTrue(args.isValid());
+        assertEquals(1, args.cardinality());
+        assertTrue(args.has('d'));
+        assertEquals(2.33, args.getDouble('d'));
+    }
+
 
 }

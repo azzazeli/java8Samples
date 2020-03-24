@@ -1,6 +1,5 @@
 package oca.enthuware.sampletest;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 public class BooleanQuestion {
     public static void main(String[] args) {
