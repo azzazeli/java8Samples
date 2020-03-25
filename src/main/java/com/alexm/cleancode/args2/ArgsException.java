@@ -20,6 +20,8 @@ public class ArgsException extends Exception {
         INVALID_INTEGER,
         UNEXPECTED_ARGUMENT,
         INVALID_ARGUMENT_NAME,
+        INVALID_DOUBLE,
+        MISSING_DOUBLE,
         OK
     }
 
@@ -53,6 +55,10 @@ public class ArgsException extends Exception {
                 return String.format("Invalid value:%s provided for integer argument:-%c", errorParameter, errorArgument);
             case INVALID_ARGUMENT_NAME:
                 return String.format("Bad character:%s in schema format.", errorArgument);
+            case INVALID_DOUBLE:
+                return String.format("Invalid value:%s provided for double argument:-%c", errorParameter, errorArgument);
+            case MISSING_DOUBLE:
+                return String.format("Could not find double parameter for argument -%c.", errorArgument);
             case OK:
                 return "TILT: Should not get here";
         }

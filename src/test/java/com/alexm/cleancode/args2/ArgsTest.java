@@ -140,5 +140,16 @@ class ArgsTest {
         assertEquals(2.33, args.getDouble('d'));
     }
 
+    @Test
+    void invalidDouble() {
+        final ArgsException argsException = assertThrows(ArgsException.class, () -> new Args("d##", new String[]{"-d", "d"}));
+        assertThat(argsException.getErrorMessage(), is("Invalid value:d provided for double argument:-d"));
+    }
+
+    @Test
+    void missingDouble() {
+        final ArgsException argsException = assertThrows(ArgsException.class, () -> new Args("d##", new String[]{"-d"}));
+        assertThat(argsException.getErrorMessage(), is("Could not find double parameter for argument -d."));
+    }
 
 }
