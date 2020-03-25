@@ -1,13 +1,12 @@
 package com.alexm.cleancode.args2;
 
-import java.text.ParseException;
 
 /**
  * @author AlexM
  * Date: 3/14/20
  **/
 public class Main {
-    public static void main(String[] args) throws ParseException, ArgsException {
+    public static void main(String[] args) throws ArgsException {
         Args arg = new Args("l,p#, d*", args);
         boolean logging = arg.getBoolean('l');
         executeApplication(logging);
